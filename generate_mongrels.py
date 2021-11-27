@@ -140,6 +140,7 @@ if not os.path.exists(output_dir):
     logging.info("Creating the output directory %s", output_dir)
     os.makedirs(output_dir)
 
-configuration_json = load_configuration(open(args.configuration, encoding='UTF8'))
-generated_seeds = [random.random() for _ in range(args.count)]
-generate(configuration_json, output_dir, args.count, generated_seeds, args.override)
+with open(args.configuration, encoding='UTF8') as configuration_file:    
+    configuration_json = load_configuration(configuration_file)
+    generated_seeds = [random.random() for _ in range(args.count)]
+    generate(configuration_json, output_dir, args.count, generated_seeds, args.override)
