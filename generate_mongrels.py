@@ -32,7 +32,7 @@ def validate_configuration(config):
     Calculates if all possibilities sums up to 1.0.
     """
     total_kinds= functools.reduce(lambda x,y:x+float(y['probability']), config['kinds'],0)
-    logging.debug("Total probabilities for all kinds is %d", {total_kinds})
+    logging.debug("Total probabilities for all kinds is %d", total_kinds)
 
     assert isclose(total_kinds, 1.0),\
     f"The sum of probabilities for all kinds must be equal to 1 (is {total_kinds})."
@@ -43,14 +43,13 @@ def validate_configuration(config):
                 functools.reduce(lambda x,y:x+float(y['probability']), feature['variants'],0)
             logging.debug("Total probabilities for \"%s\" is %d", feature['name'], total_features)
             assert isclose(total_features, 1.0), \
-                f"The sum of probabilities for a feature \"{feature['name']}\" must be equal to 1 (is {total_features})."
+                f"Sum of probabilities for feature \"{feature['name']}\" != 1 ({total_features})."
 
 def load_configuration(file):
     """
     Loads the configuration json file.
     """
     configuration = json.load(file)
-    print (configuration)
     validate_configuration(configuration)
     logging.info("Total possible variants: %i", count_possibilities(configuration))
     return configuration
@@ -115,17 +114,17 @@ def generate(configuration, output, count, seeds, override):
 
 parser =\
     argparse.ArgumentParser(description='Generate mongrels using a configuration file and a seed.')
-parser.add_argument('configuration', type=str, nargs='?',
+parser.add_argument('--configuration', type=str, nargs='?',
                     help='a path to the configuration file', default="configuration.json")
-parser.add_argument('seed', type=int, nargs='?',
+parser.add_argument('--seed', type=int, nargs='?',
                     help='a seed for RNG', default=0)
-parser.add_argument('count', type=int, nargs='?',
+parser.add_argument('--count', type=int, nargs='?',
                     help='number of dogs to generate', default=50)
-parser.add_argument('output', type=str, nargs='?',
+parser.add_argument('--output', type=str, nargs='?',
                     help='Output directory', default="mongrels")
-parser.add_argument('logfile', type=str, nargs='?',
+parser.add_argument('--logfile', type=str, nargs='?',
                     help='Logs file', default="log.txt")
-parser.add_argument('override', type=bool, nargs='?',
+parser.add_argument('--override', type=bool, nargs='?',
                     help='Override generated mongrels', default=True)
 
 args = parser.parse_args()
@@ -140,6 +139,7 @@ if not os.path.exists(output_dir):
     logging.info("Creating the output directory %s", output_dir)
     os.makedirs(output_dir)
 
-configuration_json = load_configuration(open(args.configuration, encoding='UTF8'))
-generated_seeds = [random.random() for _ in range(args.count)]
-generate(configuration_json, output_dir, args.count, generated_seeds, args.override)
+with open(args.configuration, encoding='UTF8') as configuration_file:
+    configuration_json = load_configuration(configuration_file)
+    generated_seeds = [random.random() for _ in range(args.count)]
+    generate(configuration_json, output_dir, args.count, generated_seeds, args.override)
