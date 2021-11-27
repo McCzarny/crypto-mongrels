@@ -6,13 +6,14 @@ import json
 import os
 import sys
 import PIL
+from PIL import Image
 
 def read_image(path):
     """
     Reads an image file and returns it.
     """
     try:
-        image = PIL.Image.open(path, 'r')
+        image = Image.open(path, 'r')
         return image
     except (FileNotFoundError, PIL.UnidentifiedImageError, ValueError, TypeError)  as exception:
         print(exception)
@@ -88,16 +89,18 @@ args = parser.parse_args()
 
 print(args)
 
-with json.load(open(args.configuration, encoding='utf-8')) as configuration_json:
-
+with open(args.configuration, encoding='utf-8') as configuration_file:
+    configuration_json = json.load(configuration_file)
     output_dir = os.path.join(sys.path[0], args.output)
     if not os.path.exists(output_dir):
         print(f"Creating the output directory {output_dir}")
         os.makedirs(output_dir)
 
-    for mongrel_file in os.listdir(args.input):
-        if mongrel_file.endswith("json"):
-            full_path = os.path.join(args.input, mongrel_file)
-            with json.load(open(full_path, encoding='utf-8')) as mongrel_json:
-                destination_file = os.path.join(output_dir, mongrel_file.replace("json", "png"))
+    for mongrel_file_name in os.listdir(args.input):
+        if mongrel_file_name.endswith("json"):
+            full_path = os.path.join(args.input, mongrel_file_name)
+            with open(full_path, encoding='utf-8') as mongrel_file:
+                mongrel_json = json.load(mongrel_file)
+                destination_file =\
+                    os.path.join(output_dir, mongrel_file_name.replace("json", "png"))
                 generate_image(mongrel_json, configuration_json, destination_file)
