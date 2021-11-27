@@ -27,11 +27,11 @@ jobs:
       run: python ./generate_mongrels.py --count 1
     - name: Generate a mongrel image
       run: python ./generate_images.py
-    - name: Archive code coverage results
+    - name: Archive the generated mongrel
       uses: actions/upload-artifact@v2
       with:
         name: generated-mongrel
-        path: images/1.png
+        path: images/0.png
 
 
     
