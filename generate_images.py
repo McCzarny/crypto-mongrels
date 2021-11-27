@@ -1,21 +1,35 @@
 #!/usr/local/bin/python3
+"""Uses mongrel json files to generate images """
 
-import argparse, json, os, PIL, sys
-from PIL import Image, ImageColor
+import argparse
+import json
+import os
+import sys
+import PIL
 
 def read_image(path):
+    """
+    Reads an image file and returns it.
+    """
     try:
         image = PIL.Image.open(path, 'r')
         return image
-    except Exception as e:
-        print(e)
+    except (FileNotFoundError, PIL.UnidentifiedImageError, ValueError, TypeError)  as exception:
+        print(exception)
+        return None
 
 def add_layer(feature_configuration, freature_id, destination):
+    """
+    Applies a new layer to the existing image.
+    """
     image_path = feature_configuration['variants'][freature_id]['image']
     overlay = read_image(os.path.join(sys.path[0],image_path))
     destination.paste(overlay, (0, 0), overlay)
 
 def apply_color_scheme(image, default_colors, destination_colors):
+    """
+    Applies a new color scheme to the image.
+    """
     if default_colors == destination_colors:
         return
 
@@ -27,19 +41,25 @@ def apply_color_scheme(image, default_colors, destination_colors):
             index = default_colors.index(item[:-1])
             destination_color = destination_colors[index]
             destination_color = destination_color + (item[3],)
-            output_data.append(destination_color) 
+            output_data.append(destination_color)
         except ValueError:
             output_data.append(item)
 
     image.putdata(output_data)
 
-def get_color_scheme(configuration):
+def get_color_scheme(color_configuration):
+    """
+    Generates an array with colors according to a configuration.
+    """
     color_scheme = []
-    for hex_color in configuration:
-        color_scheme.append(ImageColor.getcolor(hex_color, "RGB"))
+    for hex_color in color_configuration:
+        color_scheme.append(PIL.ImageColor.getcolor(hex_color, "RGB"))
     return color_scheme
 
 def generate_image(mongrel, configuration, destination):
+    """
+    Generates an image based on a configuration.
+    """
     kind_id = mongrel["kind"]
     kind = configuration['kinds'][kind_id]
     default_image  = kind['default image']
@@ -49,12 +69,14 @@ def generate_image(mongrel, configuration, destination):
     for idx, feature in enumerate(kind['features']):
         add_layer(feature, mongrel['features'][idx], image)
     default_color_scheme = get_color_scheme(kind['default color scheme'])
-    destination_color_scheme = get_color_scheme(kind['color schemes'][mongrel['color scheme']]['colors'])
+    color_scheme_id = mongrel['color scheme']
+    destination_color_scheme = get_color_scheme(kind['color schemes'][color_scheme_id]['colors'])
     apply_color_scheme(image, default_color_scheme, destination_color_scheme)
     #image.show()
     image.save(destination, "PNG")
 
-parser = argparse.ArgumentParser(description='Generate mongrels using a configuration file and a seed.')
+DESCRIPTION = "Generate mongrels using a configuration file and a seed."
+parser = argparse.ArgumentParser(description=DESCRIPTION)
 parser.add_argument('configuration', type=str, nargs='?',
                     help='a path to the configuration file', default="configuration.json")
 parser.add_argument('output', type=str, nargs='?',
@@ -66,15 +88,16 @@ args = parser.parse_args()
 
 print(args)
 
-configuration = json.load(open(args.configuration))
+with json.load(open(args.configuration, encoding='utf-8')) as configuration_json:
 
-output_dir = os.path.join(sys.path[0], args.output)  
-if (not os.path.exists(output_dir)):
-    print(f"Creating the output directory {output_dir}")
-    os.makedirs(output_dir)
+    output_dir = os.path.join(sys.path[0], args.output)
+    if not os.path.exists(output_dir):
+        print(f"Creating the output directory {output_dir}")
+        os.makedirs(output_dir)
 
-for mongrel_file in os.listdir(args.input):
-    if mongrel_file.endswith("json"):
-        mongrel = json.load(open(os.path.join(args.input, mongrel_file)))
-        destination_file = os.path.join(output_dir, mongrel_file.replace("json", "png"))
-        generate_image(mongrel, configuration, destination_file)
+    for mongrel_file in os.listdir(args.input):
+        if mongrel_file.endswith("json"):
+            full_path = os.path.join(args.input, mongrel_file)
+            with json.load(open(full_path, encoding='utf-8')) as mongrel_json:
+                destination_file = os.path.join(output_dir, mongrel_file.replace("json", "png"))
+                generate_image(mongrel_json, configuration_json, destination_file)

@@ -1,9 +1,21 @@
 #!/usr/local/bin/python3
+"""
+Generates mongrel json files using the configuration.
+"""
 
-import argparse, random, os, json, sys, functools, logging
+import argparse
+import random
+import os
+import json
+import sys
+import functools
+import logging
 from math import isclose
 
 def count_possibilities(config):
+    """
+    Counts how many unique mongrels could be generated using the configuration.
+    """
     total_variations = 0
     for kind in config['kinds']:
         features_variations = 1
@@ -11,29 +23,43 @@ def count_possibilities(config):
             features_variations *= len(feature['variants'])
         features_variations *= len(kind['color schemes'])
         total_variations += features_variations
-        logging.info(f"Total possible variants for kind: {features_variations}")
+        logging.info("Total possible variants for kind: %i", features_variations)
     return total_variations
 
 def validate_configuration(config):
+    """
+    Checks if the configuration is valid.
+    Calculates if all possibilities sums up to 1.0.
+    """
     total_kinds= functools.reduce(lambda x,y:x+float(y['probability']), config['kinds'],0)
-    logging.debug(f"Total probabilities for all kinds is {total_kinds}")
-    assert isclose(total_kinds, 1.0), f"The sum of probabilities for all kinds must be equal to 1 (is {total_kinds})."
+    logging.debug("Total probabilities for all kinds is %d", {total_kinds})
+
+    assert isclose(total_kinds, 1.0),\
+    f"The sum of probabilities for all kinds must be equal to 1 (is {total_kinds})."
 
     for kind in config['kinds']:
         for feature in kind['features']:
-            total_features = functools.reduce(lambda x,y:x+float(y['probability']), feature['variants'],0)
-            logging.debug(f"Total probabilities for \"{feature['name']}\" is {total_features}")
-            assert isclose(total_features, 1.0), f"The sum of probabilities for a feature \"{feature['name']}\" must be equal to 1 (is {total_features})."
+            total_features = \
+                functools.reduce(lambda x,y:x+float(y['probability']), feature['variants'],0)
+            logging.debug("Total probabilities for \"%s\" is %d", feature['name'], total_features)
+            assert isclose(total_features, 1.0), \
+                f"Sum of probabilities for feature \"{feature['name']}\" != 1 ({total_features})."
 
 def load_configuration(file):
+    """
+    Loads the configuration json file.
+    """
     configuration = json.load(file)
     print (configuration)
     validate_configuration(configuration)
-    logging.info(f"Total possible variants: {count_possibilities(configuration)}")
+    logging.info("Total possible variants: %i", count_possibilities(configuration))
     return configuration
 
 def generate_id(objects_with_probabilities, rng):
-    random_number = random.uniform(0,1)
+    """
+    Generates a semirandom ID using the probabilities defined in the configuration.
+    """
+    random_number = rng.uniform(0,1)
     for idx, objects_with_probability in enumerate(objects_with_probabilities):
         random_number -= objects_with_probability['probability']
         if random_number <= 0.0:
@@ -42,11 +68,17 @@ def generate_id(objects_with_probabilities, rng):
     assert False, "Reached unreachable code."
 
 def get_relative_path_to_mongrel_schema(file_directory):
+    """
+    Returns relative path to the mongrel schema file.
+    """
     schame_directory = os.path.join(sys.path[0], "mongrel.schema.json")
     return os.path.relpath(schame_directory, file_directory)
 
 
-def generate_morgel(seed, output_file):
+def generate_morgel(seed, output_file, configuration):
+    """
+    Generates a single mongrel using the configuration.
+    """
     rng = random.Random(seed)
     mongrel = {}
     #schema
@@ -63,22 +95,26 @@ def generate_morgel(seed, output_file):
     #color scheme
     mongrel['color scheme'] = generate_id(configuration['kinds'][kind_id]['color schemes'], rng)
 
-    logging.debug(f"Generated mongrel: {mongrel}")
+    logging.debug("Generated mongrel: %s", mongrel)
 
-    with open(output_file, 'w') as f:
-        json.dump(mongrel, f, indent=4)
+    with open(output_file, 'w', encoding = 'utf-8') as file:
+        json.dump(mongrel, file, indent=4)
 
 def generate(configuration, output, count, seeds, override):
-    for id in range(count):
-        print (f"ID: {id}, seed: {seeds[id]}")
-        output_file = os.path.join(output,f"{id}.json")
+    """
+    Generates mongrels.
+    """
+    for current_id in range(count):
+        print (f"ID: {current_id}, seed: {seeds[current_id]}")
+        output_file = os.path.join(output,f"{current_id}.json")
         if os.path.isfile(output_file) and not override:
-            logging.info(f"Skipping {output_file} as the file already exists.")
+            logging.info("Skipping %s as the file already exists.", output_file)
             continue
-        generate_morgel(seeds[id], output_file)
+        generate_morgel(seeds[current_id], output_file, configuration)
 
 
-parser = argparse.ArgumentParser(description='Generate mongrels using a configuration file and a seed.')
+parser =\
+    argparse.ArgumentParser(description='Generate mongrels using a configuration file and a seed.')
 parser.add_argument('configuration', type=str, nargs='?',
                     help='a path to the configuration file', default="configuration.json")
 parser.add_argument('seed', type=int, nargs='?',
@@ -100,10 +136,11 @@ logging.basicConfig(filename=args.logfile, encoding='utf-8', level=logging.DEBUG
 random.seed(args.seed)
 output_dir = os.path.join(sys.path[0],args.output)
 
-if (not os.path.exists(output_dir)):
-    logging.info(f"Creating the output directory {output_dir}")
+if not os.path.exists(output_dir):
+    logging.info("Creating the output directory %s", output_dir)
     os.makedirs(output_dir)
 
-configuration = load_configuration(open(args.configuration))
-seeds = [random.random() for _ in range(args.count)]
-generate(configuration, output_dir, args.count, seeds, args.override)
+with open(args.configuration, encoding='UTF8') as configuration_file:
+    configuration_json = load_configuration(configuration_file)
+    generated_seeds = [random.random() for _ in range(args.count)]
+    generate(configuration_json, output_dir, args.count, generated_seeds, args.override)
