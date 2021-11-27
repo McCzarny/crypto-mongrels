@@ -1,0 +1,181 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "required": [
+        "$schema",
+        "kinds"
+    ],
+    "properties": {
+        "$schema": {
+            "$id": "#/properties/%24schema",
+            "type": "string",
+            "title": "The $schema schema"
+        },
+        "kinds": {
+            "$id": "#/properties/kinds",
+            "type": "array",
+            "minItems": 1,
+            "title": "The variants schema",
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/kinds/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/kinds/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "required": [
+                            "default image",
+                            "probability",
+                            "features",
+                            "default color scheme",
+                            "color schemes"
+                        ],
+                        "properties": {
+                            "default image": {
+                                "$id": "#/properties/kinds/items/anyOf/0/properties/default%20image",
+                                "type": "string",
+                                "title": "The default image schema"
+                            },
+                            "probability": {
+                                "$id": "#/properties/kinds/items/anyOf/0/properties/features/items/anyOf/0/properties/kinds/items/anyOf/0/properties/probability",
+                                "type": "number",
+                                "title": "The probability schema"
+                            },
+                            "features": {
+                                "$id": "#/properties/kinds/items/anyOf/0/properties/features",
+                                "type": "array",
+                                "minItems": 1,
+                                "title": "The features schema",
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/kinds/items/anyOf/0/properties/features/items",
+                                    "anyOf": [
+                                        {
+                                            "$id": "#/properties/kinds/items/anyOf/0/properties/features/items/anyOf/0",
+                                            "type": "object",
+                                            "title": "The first anyOf schema",
+                                            "required": [
+                                                "name",
+                                                "variants"
+                                            ],
+                                            "properties": {
+                                                "name": {
+                                                    "$id": "#/properties/kinds/items/anyOf/0/properties/features/items/anyOf/0/properties/name",
+                                                    "type": "string",
+                                                    "title": "The name schema"
+                                                },
+                                                "variants": {
+                                                    "$id": "#/properties/kinds/items/anyOf/0/properties/features/items/anyOf/0/properties/kinds",
+                                                    "type": "array",
+                                                    "minItems": 1,
+                                                    "title": "The variants schema",
+                                                    "additionalItems": true,
+                                                    "items": {
+                                                        "$id": "#/properties/kinds/items/anyOf/0/properties/features/items/anyOf/0/properties/kinds/items",
+                                                        "anyOf": [
+                                                            {
+                                                                "$id": "#/properties/kinds/items/anyOf/0/properties/features/items/anyOf/0/properties/kinds/items/anyOf/0",
+                                                                "type": "object",
+                                                                "title": "The first anyOf schema",
+                                                                "required": [
+                                                                    "image",
+                                                                    "probability"
+                                                                ],
+                                                                "properties": {
+                                                                    "image": {
+                                                                        "$id": "#/properties/kinds/items/anyOf/0/properties/features/items/anyOf/0/properties/kinds/items/anyOf/0/properties/image",
+                                                                        "type": "string",
+                                                                        "title": "The image schema"
+                                                                    },
+                                                                    "probability": {
+                                                                        "$id": "#/properties/kinds/items/anyOf/0/properties/features/items/anyOf/0/properties/kinds/items/anyOf/0/properties/probability",
+                                                                        "type": "number",
+                                                                        "title": "The probability schema"
+                                                                    }
+                                                                },
+                                                                "additionalProperties": true
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "additionalProperties": true
+                                        }
+                                    ]
+                                }
+                            },
+                            "default color scheme": {
+                                "$id": "#/properties/kinds/items/anyOf/0/properties/default%20color%20scheme",
+                                "type": "array",
+                                "minItems": 1,
+                                "title": "The default color scheme schema",
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/kinds/items/anyOf/0/properties/default%20color%20scheme/items",
+                                    "anyOf": [
+                                        {
+                                            "$id": "#/properties/kinds/items/anyOf/0/properties/default%20color%20scheme/items/anyOf/0",
+                                            "type": "string",
+                                            "title": "The first anyOf schema"
+                                        }
+                                    ]
+                                }
+                            },
+                            "color schemes": {
+                                "$id": "#/properties/kinds/items/anyOf/0/properties/color%20schemes",
+                                "type": "array",
+                                "minItems": 1,
+                                "title": "The color schemes schema",
+                                "additionalItems": true,
+                                "items": {
+                                    "$id": "#/properties/kinds/items/anyOf/0/properties/color%20schemes/items",
+                                    "anyOf": [
+                                        {
+                                            "$id": "#/properties/kinds/items/anyOf/0/properties/color%20schemes/items/anyOf/0",
+                                            "type": "object",
+                                            "title": "The first anyOf schema",
+                                            "required": [
+                                                "colors",
+                                                "probability"
+                                            ],
+                                            "properties": {
+                                                "colors": {
+                                                    "$id": "#/properties/kinds/items/anyOf/0/properties/color%20schemes/items/anyOf/0/properties/colors",
+                                                    "type": "array",
+                                                    "minItems": 1,
+                                                    "title": "The colors schema",
+                                                    "additionalItems": true,
+                                                    "items": {
+                                                        "$id": "#/properties/kinds/items/anyOf/0/properties/color%20schemes/items/anyOf/0/properties/colors/items",
+                                                        "anyOf": [
+                                                            {
+                                                                "$id": "#/properties/kinds/items/anyOf/0/properties/color%20schemes/items/anyOf/0/properties/colors/items/anyOf/0",
+                                                                "type": "string",
+                                                                "title": "The first anyOf schema"
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "probability": {
+                                                    "$id": "#/properties/kinds/items/anyOf/0/properties/color%20schemes/items/anyOf/0/properties/probability",
+                                                    "type": "number",
+                                                    "title": "The probability schema"
+                                                }
+                                            },
+                                            "additionalProperties": true
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": true
+}

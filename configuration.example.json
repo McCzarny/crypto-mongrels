@@ -1,0 +1,20 @@
+{
+    "$schema": "./configuration.schema.json",
+    "kinds": [ {
+    "default image": "<path>",
+    "probability": 1.0,
+    "features": [
+        {
+            "name": "featureN",
+            "variants": [
+        {
+         "image": "<path>", "probability": 1.0 
+        }
+    ]}],
+    "default color scheme": ["#000000", "#001100", "#110000", "#000011"],
+    "color schemes": [
+    { "colors": ["#111111", "#110011", "#001111", "#111100"], "probability": 1.0 }
+    ]
+}
+]
+}
