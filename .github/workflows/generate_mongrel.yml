@@ -22,7 +22,7 @@ jobs:
       run: |
         unzip -qq -P ${{ secrets.ASSETS_PASSWORD }} assets.zip
     - name: Get the configuration
-      run: printf "${{ secrets.CONFIGURATION }}" >> configuration.json
+      run: printf '${{ secrets.CONFIGURATION }}' >> configuration.json
     - name: Generate a mongrel json
       run: python ./generate_mongrels.py --count 1
     - name: Generate a mongrel image
