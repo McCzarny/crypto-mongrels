@@ -1,0 +1,37 @@
+name: Pylint
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install PIL
+    - name: Unpack assets
+      run: |
+        unzip -P ${{ secrets.ASSETS_PASSWORD }} assets.zip
+    - name: Get the configuration
+      run: printf ${{ secrets.CONFIGURATION }} >> configuration.json
+    - name: Generate a mongrel json
+      run: python ./generate_mongrels.py --count 1
+    - name: Generate a mongrel image
+      run: python ./generate_images.py
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v2
+      with:
+        name: generated-mongrel
+        path: images/1.png
+
+
+    
