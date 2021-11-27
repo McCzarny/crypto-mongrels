@@ -43,7 +43,7 @@ def validate_configuration(config):
                 functools.reduce(lambda x,y:x+float(y['probability']), feature['variants'],0)
             logging.debug("Total probabilities for \"%s\" is %d", feature['name'], total_features)
             assert isclose(total_features, 1.0), \
-                f"The sum of probabilities for a feature \"{feature['name']}\" must be equal to 1 (is {total_features})."
+                f"Sum of probabilities for feature \"{feature['name']}\" != 1 ({total_features})."
 
 def load_configuration(file):
     """
@@ -140,7 +140,7 @@ if not os.path.exists(output_dir):
     logging.info("Creating the output directory %s", output_dir)
     os.makedirs(output_dir)
 
-with open(args.configuration, encoding='UTF8') as configuration_file:    
+with open(args.configuration, encoding='UTF8') as configuration_file:
     configuration_json = load_configuration(configuration_file)
     generated_seeds = [random.random() for _ in range(args.count)]
     generate(configuration_json, output_dir, args.count, generated_seeds, args.override)
