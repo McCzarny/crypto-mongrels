@@ -1,4 +1,4 @@
-name: Pylint
+name: Generate a mongrel
 
 on: [push]
 
@@ -17,7 +17,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install PIL
+        pip install Pillow
     - name: Unpack assets
       run: |
         unzip -P ${{ secrets.ASSETS_PASSWORD }} assets.zip
