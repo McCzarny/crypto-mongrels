@@ -24,14 +24,15 @@ jobs:
     - name: Get the configuration
       run: printf '${{ secrets.CONFIGURATION }}' >> configuration.json
     - name: Generate a mongrel json
-      run: python ./generate_mongrels.py --count 1
+      run: python ./generate_mongrels.py --count 5
     - name: Generate a mongrel image
       run: python ./generate_images.py
     - name: Archive the generated mongrel
       uses: actions/upload-artifact@v2
       with:
         name: generated-mongrel
-        path: images/0.png
+        path: images/
+        if-no-files-found: error
 
 
     
