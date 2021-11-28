@@ -24,7 +24,7 @@ jobs:
     - name: Get the configuration
       run: printf '${{ secrets.CONFIGURATION }}' >> configuration.json
     - name: Generate a mongrel json
-      run: python ./generate_mongrels.py --count 5
+      run: python ./generate_mongrels.py --count 5 --seed 3
     - name: Generate a mongrel image
       run: python ./generate_images.py
     - name: Archive the generated mongrel
