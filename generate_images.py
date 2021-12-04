@@ -57,7 +57,7 @@ def get_color_scheme(color_configuration):
         color_scheme.append(PIL.ImageColor.getcolor(hex_color, "RGB"))
     return color_scheme
 
-def generate_image(mongrel, configuration, destination):
+def generate_image(mongrel, configuration, destination, scale):
     """
     Generates an image based on a configuration.
     """
@@ -73,17 +73,23 @@ def generate_image(mongrel, configuration, destination):
     color_scheme_id = mongrel['color scheme']
     destination_color_scheme = get_color_scheme(kind['color schemes'][color_scheme_id]['colors'])
     apply_color_scheme(image, default_color_scheme, destination_color_scheme)
-    #image.show()
+
+    if scale != 1.0:
+        new_size = (int(image.size[0] * scale), int(image.size[1] * scale))
+        image = image.resize(new_size, PIL.Image.NEAREST)
+
     image.save(destination, "PNG")
 
 DESCRIPTION = "Generate mongrels using a configuration file and a seed."
 parser = argparse.ArgumentParser(description=DESCRIPTION)
-parser.add_argument('configuration', type=str, nargs='?',
+parser.add_argument('--configuration', type=str, nargs='?',
                     help='a path to the configuration file', default="configuration.json")
-parser.add_argument('output', type=str, nargs='?',
+parser.add_argument('--output', type=str, nargs='?',
                     help='Output directory', default="images")
-parser.add_argument('input', type=str, nargs='?',
+parser.add_argument('--input', type=str, nargs='?',
                     help='Input directory', default="mongrels")
+parser.add_argument('--scale', type=float, nargs='?',
+                    help='Destination scale of the images', default=1.0)
 
 args = parser.parse_args()
 
@@ -103,4 +109,4 @@ with open(args.configuration, encoding='utf-8') as configuration_file:
                 mongrel_json = json.load(mongrel_file)
                 destination_file =\
                     os.path.join(output_dir, mongrel_file_name.replace("json", "png"))
-                generate_image(mongrel_json, configuration_json, destination_file)
+                generate_image(mongrel_json, configuration_json, destination_file, args.scale)
