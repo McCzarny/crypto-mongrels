@@ -26,7 +26,7 @@ jobs:
     - name: Generate a mongrel json
       run: python ./generate_mongrels.py --count 5 --seed 3
     - name: Generate a mongrel image
-      run: python ./generate_images.py
+      run: python ./generate_images.py --scale=2
     - name: Archive the generated mongrel
       uses: actions/upload-artifact@v2
       with:
