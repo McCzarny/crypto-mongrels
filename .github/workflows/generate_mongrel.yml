@@ -35,7 +35,7 @@ jobs:
         if-no-files-found: error
     - name: Upload image
       id: upload-image-0
-      uses: McCzarny/upload-image@v0.0.3
+      uses: McCzarny/upload-image@v1.2.1-prerelease
       if: github.event_name == 'pull_request'
       with:
         path: images/0.png
@@ -43,7 +43,7 @@ jobs:
         apiKey: '${{ secrets.IMGBB_API_KEY }}'
     - name: Upload image
       id: upload-image-1
-      uses: McCzarny/upload-image@v0.0.3
+      uses: McCzarny/upload-image@v1.2.1-prerelease
       if: github.event_name == 'pull_request'
       with:
         path: images/1.png
@@ -51,7 +51,7 @@ jobs:
         apiKey: '${{ secrets.IMGBB_API_KEY }}'
     - name: Upload image
       id: upload-image-2
-      uses: McCzarny/upload-image@v0.0.3
+      uses: McCzarny/upload-image@v1.2.1-prerelease
       if: github.event_name == 'pull_request'
       with:
         path: images/2.png
@@ -59,7 +59,7 @@ jobs:
         apiKey: '${{ secrets.IMGBB_API_KEY }}'
     - name: Upload image
       id: upload-image-3
-      uses: McCzarny/upload-image@v0.0.3
+      uses: McCzarny/upload-image@v1.2.1-prerelease
       if: github.event_name == 'pull_request'
       with:
         path: images/3.png
@@ -67,10 +67,23 @@ jobs:
         apiKey: '${{ secrets.IMGBB_API_KEY }}'
     - name: Upload image
       id: upload-image-4
-      uses: McCzarny/upload-image@v0.0.3
+      uses: McCzarny/upload-image@v1.2.1-prerelease
       if: github.event_name == 'pull_request'
       with:
         path: images/4.png
+        uploadMethod: imgbb
+        apiKey: '${{ secrets.IMGBB_API_KEY }}'
+    - name: Upload multiple image
+      id: upload-images
+      uses: McCzarny/upload-image@v1.2.1-prerelease
+      if: github.event_name == 'pull_request'
+      with:
+        path: |
+          images/0.png
+          images/1.png
+          images/2.png
+          images/3.png
+          images/4.png
         uploadMethod: imgbb
         apiKey: '${{ secrets.IMGBB_API_KEY }}'
     - name: 'Comment PR'
@@ -80,4 +93,4 @@ jobs:
         github-token: ${{ secrets.TOKEN_GITHUB }}
         script: |
           const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
-          github.issues.createComment({ issue_number, owner, repo, body: 'Images:\n![0](${{steps.upload-image-0.outputs.url}})![1](${{steps.upload-image-1.outputs.url}})![2](${{steps.upload-image-2.outputs.url}})![3](${{steps.upload-image-3.outputs.url}})![4](${{steps.upload-image-4.outputs.url}})'});
+          github.issues.createComment({ issue_number, owner, repo, body: 'Images:\n![0](${{steps.upload-image-0.outputs.url}})![1](${{steps.upload-image-1.outputs.url}})![2](${{steps.upload-image-2.outputs.url}})![3](${{steps.upload-image-3.outputs.url}})![4](${{steps.upload-image-4.outputs.url}})\nURLS:\n${{steps.upload-images.outputs.url}}'});
