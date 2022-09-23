@@ -93,4 +93,4 @@ jobs:
         github-token: ${{ secrets.TOKEN_GITHUB }}
         script: |
           const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
-          github.issues.createComment({ issue_number, owner, repo, body: 'Images:\n![0](${{steps.upload-image-0.outputs.url}})![1](${{steps.upload-image-1.outputs.url}})![2](${{steps.upload-image-2.outputs.url}})![3](${{steps.upload-image-3.outputs.url}})![4](${{steps.upload-image-4.outputs.url}})\nLinks:\nsteps.upload-images.outputs.url'});
+          github.issues.createComment({ issue_number, owner, repo, body: 'Images:\n![0](${{steps.upload-image-0.outputs.url}})![1](${{steps.upload-image-1.outputs.url}})![2](${{steps.upload-image-2.outputs.url}})![3](${{steps.upload-image-3.outputs.url}})![4](${{steps.upload-image-4.outputs.url}})\nLinks:\n${{steps.upload-images.outputs.url}});
