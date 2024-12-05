@@ -76,7 +76,7 @@ def generate_image(mongrel, configuration, destination, scale):
 
     if scale != 1.0:
         new_size = (int(image.size[0] * scale), int(image.size[1] * scale))
-        image = image.resize(new_size, PIL.Image.NEAREST)
+        image = image.resize(new_size, PIL.Image.Resampling.NEAREST)
 
     image.save(destination, "PNG")
 
