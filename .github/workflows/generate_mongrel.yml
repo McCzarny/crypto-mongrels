@@ -34,43 +34,16 @@ jobs:
         path: images/
         if-no-files-found: error
     - name: Upload image
-      id: upload-image-0
-      uses: McCzarny/upload-image@v1.3.0-alpha.6
+      id: upload-image
+      uses: McCzarny/upload-image@develop
       if: github.event_name == 'pull_request'
       with:
-        path: images/0.png
-        uploadMethod: imgbb
-        apiKey: '${{ secrets.IMGBB_API_KEY }}'
-    - name: Upload image
-      id: upload-image-1
-      uses: McCzarny/upload-image@v1.3.0-alpha.6
-      if: github.event_name == 'pull_request'
-      with:
-        path: images/1.png
-        uploadMethod: imgbb
-        apiKey: '${{ secrets.IMGBB_API_KEY }}'
-    - name: Upload image
-      id: upload-image-2
-      uses: McCzarny/upload-image@v1.3.0-alpha.6
-      if: github.event_name == 'pull_request'
-      with:
-        path: images/2.png
-        uploadMethod: imgbb
-        apiKey: '${{ secrets.IMGBB_API_KEY }}'
-    - name: Upload image
-      id: upload-image-3
-      uses: McCzarny/upload-image@v1.3.0-alpha.6
-      if: github.event_name == 'pull_request'
-      with:
-        path: images/3.png
-        uploadMethod: imgbb
-        apiKey: '${{ secrets.IMGBB_API_KEY }}'
-    - name: Upload image
-      id: upload-image-4
-      uses: McCzarny/upload-image@v1.3.0-alpha.6
-      if: github.event_name == 'pull_request'
-      with:
-        path: images/4.png
+        path: |
+          images/0.png
+          images/1.png
+          images/2.png
+          images/3.png
+          images/4.png
         uploadMethod: imgbb
         apiKey: '${{ secrets.IMGBB_API_KEY }}'
     - name: 'Comment PR'
@@ -83,5 +56,5 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: 'Images:\n![0](${{steps.upload-image-0.outputs.url}})![1](${{steps.upload-image-1.outputs.url}})![2](${{steps.upload-image-2.outputs.url}})![3](${{steps.upload-image-3.outputs.url}})![4](${{steps.upload-image-4.outputs.url}})'
+            body: 'Images:\n![0](${{steps.upload-image.outputs.urls[0]}})![1](${{steps.upload-image.outputs.urls[1]}})![2](${{steps.upload-image.outputs.urls[2]}})![3](${{steps.upload-image.outputs.urls[3]}})![4](${{steps.upload-image.outputs.urls[4]}})'
             });
