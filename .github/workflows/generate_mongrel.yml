@@ -47,7 +47,7 @@ jobs:
         uploadMethod: imgbb
         apiKey: '${{ secrets.IMGBB_API_KEY }}'
     - name: Print uploaded image urls
-      run: echo "${{ steps.upload_image.outputs.urls }}"
+      run: echo "${{ fromJson(steps.upload_image.outputs.urls) }}"
     - name: Print uploaded outputs
       run: echo "${{join(steps.upload_image.outputs.*, '\n')}}"
     - name: 'Comment PR'
@@ -60,5 +60,5 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: 'Images:\n![0](${{steps.upload_image.outputs.urls[0]}})![1](${{steps.upload_image.outputs.urls[1]}})![2](${{steps.upload_image.outputs.urls[2]}})![3](${{steps.upload_image.outputs.urls[3]}})![4](${{steps.upload_image.outputs.urls[4]}})'
+            body: 'Images:\n![0](${{fromJson(steps.upload_image.outputs.urls)[0]}})![1](${{fromJson(steps.upload_image.outputs.urls)[1]}})![2](${{fromJson(steps.upload_image.outputs.urls)[2]}})![3](${{fromJson(steps.upload_image.outputs.urls)[3]}})![4](${{fromJson(steps.upload_image.outputs.urls)[4]}})'
             });
