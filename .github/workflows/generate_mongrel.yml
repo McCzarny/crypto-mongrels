@@ -35,7 +35,7 @@ jobs:
         if-no-files-found: error
     - name: Upload image
       id: upload_image
-      uses: McCzarny/upload-image@develop
+      uses: McCzarny/upload-image@1.3.0
       if: github.event_name == 'pull_request'
       with:
         path: |
