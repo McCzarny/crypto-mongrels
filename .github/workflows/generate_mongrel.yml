@@ -46,6 +46,10 @@ jobs:
           images/4.png
         uploadMethod: imgbb
         apiKey: '${{ secrets.IMGBB_API_KEY }}'
+    - name: Print uploaded image urls
+      run: echo "${{ steps.upload_image.outputs.urls }}"
+    - name: Print uploaded outputs
+      run: echo "${{join(steps.upload_image.outputs.*, '\n')}}"
     - name: 'Comment PR'
       uses: actions/github-script@v7.0.1
       if: github.event_name == 'pull_request'
